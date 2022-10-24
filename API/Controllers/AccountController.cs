@@ -26,14 +26,14 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            if (await UserExist(registerDto.UserName))
+            if (await UserExist(registerDto.Username))
                 return BadRequest("UserName is taken");
 
             using var hmac = new HMACSHA512();
 
             var newUser = new AppUser
             {
-                UserName = registerDto.UserName.ToLower(),
+                Username = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key
             };
@@ -42,7 +42,7 @@ namespace API.Controllers
             await _context.SaveChangesAsync();
 
             return new UserDto{
-                UserName = newUser.UserName,
+                Username = newUser.Username,
                 Token = _tokenService.CreateToken(newUser)
             };
         }
@@ -51,7 +51,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _context.Users
-                .SingleOrDefaultAsync(x => x.UserName == loginDto.UserName);
+                .SingleOrDefaultAsync(x => x.Username == loginDto.Username);
 
             if (user == null)
                 return Unauthorized("Invalid Username");
@@ -66,14 +66,14 @@ namespace API.Controllers
                     return Unauthorized("Invalid Password");
             }
             return new UserDto{
-                UserName = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
         private async Task<bool> UserExist(string username)
         {
-            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
         }
     }
 }
