@@ -34,7 +34,7 @@ namespace API.Middleware
                 context.Response.StatusCode = (int) HttpStatusCode.InternalServerError; //Set le StatusCode
 
                 //Test si l'environnement est en mode developpement ou pas
-                var response = _env.IsDevelopment() 
+                ApiException response = _env.IsDevelopment() 
                 ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString()) // Si oui on détail bien le contenu de notre response
                 : new ApiException(context.Response.StatusCode, "Internal Servor Error"); // Si non on précise juste Internal Servor Error
 

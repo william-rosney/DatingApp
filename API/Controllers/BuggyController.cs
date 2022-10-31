@@ -17,7 +17,7 @@ namespace API.Controllers
             _context = context;
         }
 
-        [Authorize ]
+        [Authorize]
         [HttpGet("auth")]
         public ActionResult<string> GetSecret()
         {
@@ -28,7 +28,7 @@ namespace API.Controllers
         public ActionResult<AppUser> GetNotFound()
         {
             var thing = _context.Users.Find(-1);
-            if(thing == null) return NotFound();
+            if (thing == null) return NotFound();
             return Ok(thing);
         }
         [HttpGet("server-error")]
@@ -39,7 +39,7 @@ namespace API.Controllers
             var thingToReturn = thing.ToString();
             return thingToReturn;
         }
-        [ HttpGet("bad-request")]
+        [HttpGet("bad-request")]
         public ActionResult<string> GetBadRequest()
         {
             return BadRequest("This was a bad request");
